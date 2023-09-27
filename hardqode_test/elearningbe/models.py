@@ -38,6 +38,7 @@ class UserProductLessonHistory(models.Model):
     def __str__(self):
         return f"{self.user}-{self.product}-{self.lesson}"
 
+    @property
     def was_watched(self):
         return self.whatch_time >= 0.8* self.lesson.length_in_seconds
     
