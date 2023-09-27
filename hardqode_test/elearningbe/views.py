@@ -7,8 +7,8 @@ from .serializers import UserAvailableLessonsWithStatsSerializer, UserSerializer
 from .models import UserProductLessonHistory, User, Product, Lesson
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import FilteredRelation, Q
-from django.db.models import Count, Case, When, IntegerField, Value
+from django.db.models import FilteredRelation, Q, F
+from django.db.models import Count, Case, When, IntegerField, Value, ExpressionWrapper, BooleanField
 
 class UserAvailableLessonsWithStats(generics.ListAPIView):
     serializer_class = UserAvailableLessonsWithStatsSerializer
@@ -43,6 +43,5 @@ class ProductStats(generics.ListAPIView):
     queryset = UserProductLessonHistory.objects.filter(id=1)
     def get_queryset(self):
         product = self.kwargs['product']
-        data = UserProductLessonHistory.objects.filter(product__name=product).annotate(was_watched=Value(True))
-        print(data)
-        return data
+        qs = UserProductLessonHistory.objects.filter(product__name=product).annotate(was_watched=ExpressionWrapper(Q(whatch_time__gte=F("lesson__length_in_seconds")*0.8), output_field=BooleanField()))
+        return qs

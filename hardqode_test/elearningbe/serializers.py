@@ -47,7 +47,6 @@ class ProductStatSerializer(serializers.HyperlinkedModelSerializer):
     lessons = LessonSerializer
     lessons = LessonSerializer(many=True, read_only=True)
     was_watched = serializers.BooleanField()
-    # total_whatch_time = serializers.IntegerField()
     class Meta:
         model = UserProductLessonHistory
         fields = ['user', 'product', 'lessons', 'whatch_time', 'last_watch_date', 'was_watched']
