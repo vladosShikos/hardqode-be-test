@@ -1,6 +1,5 @@
 from django.db import models
-
-
+from django.db.models import Case, Value, When, F
 class User(models.Model):
     name = models.CharField(max_length=200)
     def __str__(self):
@@ -38,7 +37,6 @@ class UserProductLessonHistory(models.Model):
     def __str__(self):
         return f"{self.user}-{self.product}-{self.lesson}"
 
-    @property
-    def was_watched(self):
-        return self.whatch_time >= 0.8* self.lesson.length_in_seconds
-    
+    # @property
+    # def was_watched(self):
+    #     return self.whatch_time >= 0.8* self.lesson.length_in_seconds

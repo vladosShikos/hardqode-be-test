@@ -14,11 +14,14 @@ class LessonSerializer(serializers.HyperlinkedModelSerializer):
         model = Lesson
         fields = ['name', 'url', 'length_in_seconds', 'accessable_to']
 
+
+
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
     class Meta:
-        model = Product
+        model = UserProductLessonHistory
         fields = ['name', 'owners', 'lessons']
+
 
 
 class UserAvailableLessonsWithStatsSerializer(serializers.HyperlinkedModelSerializer):
@@ -37,3 +40,14 @@ class UserProductAvailableLessonsWithStatsSerializer(serializers.HyperlinkedMode
     class Meta:
         model = UserProductLessonHistory
         fields = ['user', 'product', 'lesson', 'whatch_time', 'was_watched', 'last_watch_date']
+
+class ProductStatSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer
+    Products = ProductSerializer    
+    lessons = LessonSerializer
+    lessons = LessonSerializer(many=True, read_only=True)
+    was_watched = serializers.BooleanField()
+    # total_whatch_time = serializers.IntegerField()
+    class Meta:
+        model = UserProductLessonHistory
+        fields = ['user', 'product', 'lessons', 'whatch_time', 'last_watch_date', 'was_watched']

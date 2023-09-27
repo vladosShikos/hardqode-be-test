@@ -3,12 +3,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import permissions, generics
 from rest_framework.response import Response
-from .serializers import UserAvailableLessonsWithStatsSerializer, UserSerializer, ProductSerializer, LessonSerializer, UserProductAvailableLessonsWithStatsSerializer
+from .serializers import UserAvailableLessonsWithStatsSerializer, UserSerializer, ProductSerializer, LessonSerializer, UserProductAvailableLessonsWithStatsSerializer, ProductStatSerializer
 from .models import UserProductLessonHistory, User, Product, Lesson
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import FilteredRelation, Q
-from django.db.models import Count, Case, When, IntegerField
+from django.db.models import Count, Case, When, IntegerField, Value
 
 class UserAvailableLessonsWithStats(generics.ListAPIView):
     serializer_class = UserAvailableLessonsWithStatsSerializer
@@ -39,9 +39,10 @@ class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
   
 class ProductStats(generics.ListAPIView):
-    serializer_class = UserProductAvailableLessonsWithStatsSerializer
+    serializer_class = ProductStatSerializer
+    queryset = UserProductLessonHistory.objects.filter(id=1)
     def get_queryset(self):
         product = self.kwargs['product']
-        data = UserProductLessonHistory.objects.filter(product__name=product).annotate(was_watched=Count(Case(When(watch_time__gt=1, then=1),output_field=IntegerField())))
+        data = UserProductLessonHistory.objects.filter(product__name=product).annotate(was_watched=Value(True))
         print(data)
         return data
