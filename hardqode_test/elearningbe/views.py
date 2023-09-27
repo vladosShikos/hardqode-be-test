@@ -14,14 +14,14 @@ class UserAvailableLessonsWithStats(generics.ListAPIView):
     serializer_class = UserAvailableLessonsWithStatsSerializer
     def get_queryset(self):
         user_name = self.kwargs['user']
-        return UserProductLessonHistory.objects.filter(user__name=user_name)
+        return UserProductLessonHistory.objects.filter(user__name=user_name).annotate(was_watched=ExpressionWrapper(Q(whatch_time__gte=F("lesson__length_in_seconds")*0.8), output_field=BooleanField()))
 
 class UserProductAvailableLessonsWithStats(generics.ListAPIView):
     serializer_class = UserProductAvailableLessonsWithStatsSerializer
     def get_queryset(self):
         user_name = self.kwargs['user']
         product = self.kwargs['product']
-        return UserProductLessonHistory.objects.filter(user__name=user_name).filter(product__name=product)
+        return UserProductLessonHistory.objects.filter(user__name=user_name).filter(product__name=product).annotate(was_watched=ExpressionWrapper(Q(whatch_time__gte=F("lesson__length_in_seconds")*0.8), output_field=BooleanField()))
 
 # class UserAvailableLessonsWithStatsViewSet(viewsets.ModelViewSet):
 #     queryset = UserProductLessonHistory.objects.all()

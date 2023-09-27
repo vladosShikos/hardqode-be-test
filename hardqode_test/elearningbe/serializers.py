@@ -19,7 +19,7 @@ class LessonSerializer(serializers.HyperlinkedModelSerializer):
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
     class Meta:
-        model = UserProductLessonHistory
+        model = Product
         fields = ['name', 'owners', 'lessons']
 
 
@@ -28,6 +28,7 @@ class UserAvailableLessonsWithStatsSerializer(serializers.HyperlinkedModelSerial
     user = UserSerializer
     Products = ProductSerializer    
     lessons = LessonSerializer
+    was_watched = serializers.BooleanField()
     class Meta:
         model = UserProductLessonHistory
         fields = ['user', 'product', 'lesson', 'whatch_time', 'was_watched']
@@ -37,6 +38,7 @@ class UserProductAvailableLessonsWithStatsSerializer(serializers.HyperlinkedMode
     user = UserSerializer
     Products = ProductSerializer    
     lessons = LessonSerializer
+    was_watched = serializers.BooleanField()
     class Meta:
         model = UserProductLessonHistory
         fields = ['user', 'product', 'lesson', 'whatch_time', 'was_watched', 'last_watch_date']
