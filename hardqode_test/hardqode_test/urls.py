@@ -15,23 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
-from rest_framework import routers
-from elearningbe import views
-
-router = routers.DefaultRouter()
-# router.register(r'userAvailableLessonsWithStats', views.UserAvailableLessonsWithStatsViewSet)
-router.register(r'users', views.UserViewSet, basename='user')
-router.register(r'products', views.ProductViewSet)
-# router.register(r'products-stats', views.ProductStatsViewSet)
-router.register(r'lessons', views.LessonViewSet)
+from django.urls import path, include
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('userAvailableLessonsWithStats/<str:user>/', views.UserAvailableLessonsWithStats.as_view()),
-    path('userAvailableLessonsWithStats/<str:user>/<str:product>', views.UserProductAvailableLessonsWithStats.as_view()),
-    path('products-stats/<str:product>', views.ProductStats.as_view())
+    path('', include('elearning.urls')),
+]
+
+urlpatterns += [
+    path('api-auth/', include('rest_framework.urls')),
 ]
