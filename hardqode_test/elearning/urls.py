@@ -1,1 +1,12 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from elearning import views
+
+router = DefaultRouter()
+router.register('users', views.UserViewSet, basename='user')
+router.register('lessons', views.LessonViewSet, basename='lesson')
+router.register('products', views.ProductViewSet, basename='product')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
