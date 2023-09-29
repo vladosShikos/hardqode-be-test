@@ -6,6 +6,8 @@ router = DefaultRouter()
 router.register('users', views.UserViewSet, basename='user')
 router.register('lessons', views.LessonViewSet, basename='lesson')
 router.register('products', views.ProductViewSet, basename='product')
+router.register('productsaccesses', views.ProductAccessViewSet, basename='productaccess')
+router.register('userlessonhistories', views.UserLessonHistoryViewSet, basename='userlessonhistory')
 
 urlpatterns = [
     path('', include(router.urls)),
