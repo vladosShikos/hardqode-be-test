@@ -22,3 +22,11 @@ class ProductAccessViewSet(viewsets.ModelViewSet):
 class UserLessonHistoryViewSet(viewsets.ModelViewSet):
     queryset = UserLessonHistory.objects.all()
     serializer_class = UserLessonHistorySerializer
+
+class UserStatsViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserStatsSerializer
+
+class PerProductStatViewSet(viewsets.ModelViewSet):
+    queryset = UserLessonHistory.objects.all()
+    serializer_class = UserLessonHistorySerializer

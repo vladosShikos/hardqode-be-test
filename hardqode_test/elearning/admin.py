@@ -1,10 +1,9 @@
 from django.contrib import admin
 from .models import *
 
-# admin.site.register(User)
 # admin.site.register(Product)
-# admin.site.register(ProductAccessToken)
+# admin.site.register(ProductAccess)
 # admin.site.register(Lesson)
-# admin.site.register(UserProductLessonHistory)
+# admin.site.register(UserLessonHistory)
 
-# Register your models here.
+# # Register your models here.

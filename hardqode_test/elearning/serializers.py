@@ -1,18 +1,26 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from elearning.models import *
+from django.db import models
 
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    # all_available_lessons = serializers.SerializerMethodField('get_available_lessons')
     class Meta:
         model = User
         fields = ['url','username']
+    
+    # def get_available_lessons(self, user):
+    #     qs = UserLessonHistory.objects.filter(user__username=user.username)
+    #     serializer = UserAvailableLessonsSerializer(instance=qs, many=True)
+    #     # available_lessons = UserLessonHistory.objects.all()
+    #     return serializer.data
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Product
-        fields = ['url','title', 'owner', 'lessons', 'available_to']
+        fields = ['url','title', 'owner', 'lessons', 'available_to', 'stats']
 
 
 class LessonSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,6 +34,7 @@ class ProductAccessSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProductAccess
         fields = ['url', 'user', 'product', 'date_acquired', 'valid_thru']
+    
 
 class UserLessonHistorySerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer
@@ -33,4 +42,33 @@ class UserLessonHistorySerializer(serializers.HyperlinkedModelSerializer):
     lesson = LessonSerializer
     class Meta:
         model = UserLessonHistory
-        fields = ['url', 'user', 'product', 'lesson', 'watch_time', 'last_watch_date', "was_watched"]
+        fields = ['url','user', 'product', 'lesson', 'watch_time', 'last_watch_date', "was_watched"]
+
+
+class UserAvailableLessonsSerializer(serializers.ModelSerializer):
+    product = serializers.ReadOnlyField(source='product.title')
+    lesson = serializers.ReadOnlyField(source='lesson.title')
+    class Meta:
+        model = UserLessonHistory
+        fields = [ 'product', 'lesson',  "was_watched", 'watch_time', ]
+
+class UserStatsSerializer(serializers.ModelSerializer):
+    all_available_lessons = serializers.SerializerMethodField('get_available_lessons')
+    # per_product_stat = serializers.SerializerMethodField('get_per_product_stat')
+    class Meta:
+        model = User
+        fields = [ 'username', 'all_available_lessons']
+
+    def get_available_lessons(self, user):
+        qs = UserLessonHistory.objects.filter(user__username=user.username)
+        serializer = UserAvailableLessonsSerializer(instance=qs, many=True)
+        return serializer.data
+    
+    def get_per_product_stat(self, user):
+        qs = UserLessonHistory.objects.filter(user__username=user.username)
+        serializer = UserAvailableLessonsSerializer(instance=qs, many=True)
+        return serializer.data
+
+
+
+    
