@@ -6,16 +6,11 @@ from django.db import models
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # all_available_lessons = serializers.SerializerMethodField('get_available_lessons')
+    # available_lessons = serializers.HyperlinkedIdentityField(many=True, view_name='user-detail')
     class Meta:
         model = User
         fields = ['url','username']
     
-    # def get_available_lessons(self, user):
-    #     qs = UserLessonHistory.objects.filter(user__username=user.username)
-    #     serializer = UserAvailableLessonsSerializer(instance=qs, many=True)
-    #     # available_lessons = UserLessonHistory.objects.all()
-    #     return serializer.data
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -51,6 +46,11 @@ class UserAvailableLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserLessonHistory
         fields = [ 'product', 'lesson',  "was_watched", 'watch_time', ]
+
+class UserPerProductAvailableLessonsSerializer(UserAvailableLessonsSerializer):
+    class Meta:
+        model = UserLessonHistory
+        fields = [ 'product', 'lesson',  "was_watched", 'watch_time', 'last_watch_date']
 
 class UserStatsSerializer(serializers.ModelSerializer):
     all_available_lessons = serializers.SerializerMethodField('get_available_lessons')
