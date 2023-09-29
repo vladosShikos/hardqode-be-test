@@ -35,17 +35,26 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.prefetch_related('available_to','lessons').all()
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     @action(detail=True,
             methods=['get'],    
             url_path='stats', 
-            serializer_class=ProductStatsSerializer)
+            serializer_class=None)
     def get_product_stats(self, request, *args, **kwargs):
         product = self.get_object()
-        product_stats_json = self.get_serializer(product)
-        return Response(product_stats_json.data)
+        queryset = UserLessonHistory.objects.filter(product__title=product.title)
+        lessons_watched = queryset.filter(was_watched=True).count()
+        watch_time_from_all_students = queryset.aggregate(Sum('watch_time'))["watch_time__sum"]
+        number_of_students = queryset.values('user').distinct().count()
+        acquere_percent = number_of_students / User.objects.count()
+        response_body = {'lessons_watched':lessons_watched,
+                        'watch_time_from_all_students':watch_time_from_all_students,
+                        'number_of_students':number_of_students,
+                        'acquere_percent':acquere_percent
+                    }
+        return Response(response_body)
     
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
