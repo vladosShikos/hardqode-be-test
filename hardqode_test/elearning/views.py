@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db.models import Prefetch
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -34,11 +35,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.prefetch_related('available_to','lessons').all()
     serializer_class = ProductSerializer
 
     @action(detail=True,
-            methods=['get'],
+            methods=['get'],    
             url_path='stats', 
             serializer_class=ProductStatsSerializer)
     def get_product_stats(self, request, *args, **kwargs):
