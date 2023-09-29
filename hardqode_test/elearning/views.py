@@ -16,7 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer_class=UserAvailableLessonsSerializer)
     def list_available_lessons(self, request, *args, **kwargs):
         user = self.get_object()
-        lessons =   UserLessonHistory.objects.filter(user__username=user.username)
+        lessons =   UserLessonHistory.objects.select_related('lesson', 'user', 'product').filter(user__username=user.username)
         lessons_json = self.get_serializer(lessons, many=True)
         return Response(lessons_json.data)
     
@@ -28,7 +28,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def limit_products(self, request, pk, *args, **kwargs):
         product_title = self.kwargs.get('product_title')
         user = self.get_object()
-        lessons =   UserLessonHistory.objects.filter(product__title=product_title, user__username=user.username)
+        lessons =   UserLessonHistory.objects.select_related('lesson', 'user', 'product').filter(product__title=product_title, user__username=user.username)
         lessons_json = self.get_serializer(lessons, many=True)
         return Response(lessons_json.data)
 
