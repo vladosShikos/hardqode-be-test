@@ -28,7 +28,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def limit_products(self, request, pk, *args, **kwargs):
         product_title = self.kwargs.get('product_title')
         user = self.get_object()
-        print(product_title)
         lessons =   UserLessonHistory.objects.filter(product__title=product_title, user__username=user.username)
         lessons_json = self.get_serializer(lessons, many=True)
         return Response(lessons_json.data)
@@ -38,6 +37,15 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+    @action(detail=True,
+            methods=['get'],
+            url_path='stats', 
+            serializer_class=ProductStatsSerializer)
+    def get_product_stats(self, request, *args, **kwargs):
+        product = self.get_object()
+        product_stats_json = self.get_serializer(product)
+        return Response(product_stats_json.data)
+    
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
@@ -47,13 +55,5 @@ class ProductAccessViewSet(viewsets.ModelViewSet):
     serializer_class = ProductAccessSerializer
 
 class UserLessonHistoryViewSet(viewsets.ModelViewSet):
-    queryset = UserLessonHistory.objects.all()
-    serializer_class = UserLessonHistorySerializer
-
-class UserStatsViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserStatsSerializer
-
-class PerProductStatViewSet(viewsets.ModelViewSet):
     queryset = UserLessonHistory.objects.all()
     serializer_class = UserLessonHistorySerializer
