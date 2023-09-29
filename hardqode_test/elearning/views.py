@@ -67,3 +67,18 @@ class ProductAccessViewSet(viewsets.ModelViewSet):
 class UserLessonHistoryViewSet(viewsets.ModelViewSet):
     queryset = UserLessonHistory.objects.all()
     serializer_class = UserLessonHistorySerializer
+
+class ProductStatViewSet(viewsets.ViewSet):
+
+    def retrieve(self, request, pk=None):
+        product_lessons = UserLessonHistory.objects.filter(product_id=pk)
+        lessons_watched = product_lessons.filter(was_watched=True).count()
+        watch_time_from_all_students = product_lessons.aggregate(Sum('watch_time'))["watch_time__sum"]
+        number_of_students = product_lessons.values('user').distinct().count()
+        acquere_percent = number_of_students / User.objects.count()
+        response_body = {'lessons_watched':lessons_watched,
+                        'watch_time_from_all_students':watch_time_from_all_students,
+                        'number_of_students':number_of_students,
+                        'acquere_percent':acquere_percent
+                    }
+        return Response(response_body)

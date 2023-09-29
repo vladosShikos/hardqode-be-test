@@ -8,6 +8,7 @@ router.register('lessons', views.LessonViewSet, basename='lesson')
 router.register('products', views.ProductViewSet, basename='product')
 router.register('productsaccesses', views.ProductAccessViewSet, basename='productaccess')
 router.register('userlessonhistories', views.UserLessonHistoryViewSet, basename='userlessonhistory')
+router.register('productsstats', views.ProductStatViewSet, basename='productstat')
 
 urlpatterns = [
     path('', include(router.urls)),
